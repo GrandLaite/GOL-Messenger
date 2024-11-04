@@ -1,0 +1,45 @@
+@startuml class_diagram
+
+class Role {
+    +id: Integer
+    +name: String
+}
+
+class User {
+    +id: Integer
+    +username: String
+    +email: String
+    +password: String
+    +created_at: Timestamp
+    +role_id: Integer
+}
+
+class Message {
+    +id: Integer
+    +user_id: Integer
+    +content: Text
+    +created_at: Timestamp
+}
+
+class Like {
+    +id: Integer
+    +message_id: Integer
+    +user_id: Integer
+    +created_at: Timestamp
+}
+
+class SuperLike {
+    +id: Integer
+    +message_id: Integer
+    +user_id: Integer
+    +created_at: Timestamp
+}
+
+Role "1" -- "0..*" User : assigns
+User "1" -- "0..*" Message : creates
+Message "1" -- "0..*" Like : liked by
+Message "1" -- "0..*" SuperLike : super liked by
+User "1" -- "0..*" Like : likes
+User "1" -- "0..*" SuperLike : super likes
+
+@enduml
