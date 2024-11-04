@@ -1,0 +1,40 @@
+@startuml EnhancedComponentDiagram
+
+component "Сервис аутентификации" as Auth
+component "Сервис логирования" as Logging
+component "Сервис мониторинга" as Monitoring
+component "Сервис очередей сообщений" as Queue
+component "Сервис кэширования" as Cache
+component "SQL база данных" as SQLDB
+component "NoSQL база данных" as NoSQLDB
+component "Сервис хранения файлов" as FileStorage
+component "Сервис аналитики" as Analytics
+component "Сервис платежей" as Payment
+component "Основное приложение" as App
+
+App --> Auth : Аутентификация пользователя
+App --> Logging : Логирование действий пользователя
+App --> Monitoring : Мониторинг состояния системы
+App --> Queue : Фоновые задачи
+App --> Cache : Быстрый доступ к данным
+App --> SQLDB : Хранение структурированных данных
+App --> NoSQLDB : Хранение неструктурированных данных
+App --> FileStorage : Хранение файлов
+App --> Analytics : Отправка данных активности
+App --> Payment : Обработка платежей
+
+Queue --> Logging : Логирование фоновых задач
+Queue --> Monitoring : Мониторинг фоновых задач
+
+Auth --> SQLDB : Доступ к учетным данным пользователей
+
+Cache --> NoSQLDB : Кэширование данных
+
+Logging --> FileStorage : Хранение логов
+
+Analytics --> SQLDB : Анализ структурированных данных
+
+Payment --> SQLDB : Хранение данных транзакций
+Payment --> Auth : Проверка пользователя для платежей
+
+@enduml
