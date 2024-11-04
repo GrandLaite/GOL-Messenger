@@ -4,6 +4,6 @@
 3. [Project Issues](https://github.com/GrandLaite/GOL-Messenger/issues?page=3&q=is%3Aissue+is%3Aopen)
 4. [GitHub Repository](https://github.com/GrandLaite/GOL-Messenger)
 5. [Simple Web Server](https://github.com/GrandLaite/GOL-Messenger)
-6. [Messenger Database](https://github.com/GrandLaite/GOL-Messenger)
+6. [Messenger Database](https://github.com/GrandLaite/GOL-Messenger/blob/main/Database/db.sql)
 7. [Messenger Release](https://github.com/GrandLaite/GOL-Messenger/tree/main/Messanger%20Application)
 8. [Messenger Release](https://github.com/GrandLaite/GOL-Messenger/tree/main/Messanger%20Application)
