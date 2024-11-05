@@ -1,0 +1,19 @@
+@startuml CachingServiceSequence
+
+actor Пользователь as User
+participant "Основное приложение" as App
+participant "Сервис кэширования" as Cache
+participant "SQL база данных" as SQLDB
+
+User -> App : Запрос на данные
+App -> Cache : Проверка данных в кэше
+alt Данные найдены в кэше
+    Cache -> App : Данные из кэша
+else Данные не найдены в кэше
+    App -> SQLDB : Запрос данных
+    SQLDB -> App : Возвращает данные
+    App -> Cache : Сохранение данных в кэше
+end
+App -> User : Возвращает данные пользователю
+
+@enduml

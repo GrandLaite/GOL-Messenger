@@ -1,0 +1,13 @@
+@startuml LoggingServiceSequence
+
+actor User
+participant "Основное приложение" as App
+participant "Сервис логирования" as Logging
+participant "Сервис хранения файлов" as FileStorage
+
+User -> App : Выполнение действия
+App -> Logging : Отправка данных для логирования
+Logging -> Logging : Запись события в лог
+Logging -> FileStorage : Сохранение логов в файловом хранилище
+
+@enduml

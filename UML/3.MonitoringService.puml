@@ -1,0 +1,17 @@
+@startuml MonitoringServiceSequence
+
+actor Пользователь as User
+actor Администратор as Admin
+participant "Основное приложение" as App
+participant "Сервис мониторинга" as Monitoring
+participant "Сервис хранения файлов" as FileStorage
+
+User -> App : Выполнение действия
+App -> Monitoring : Отправка данных о состоянии системы
+Monitoring -> Monitoring : Анализ данных
+alt Порог превышен
+    Monitoring -> Admin : Отправка уведомления
+end
+Monitoring -> FileStorage : Сохранение данных состояния
+
+@enduml

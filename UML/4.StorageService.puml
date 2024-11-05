@@ -1,0 +1,13 @@
+@startuml FileStorageServiceSequence
+
+actor Пользователь as User
+participant "Основное приложение" as App
+participant "Сервис хранения файлов" as FileStorage
+
+User -> App : Загрузка файла
+App -> FileStorage : Передача файла для сохранения
+FileStorage -> FileStorage : Сохранение файла
+FileStorage -> App : Возвращение ссылки на файл
+App -> User : Ссылка на сохранённый файл
+
+@enduml
