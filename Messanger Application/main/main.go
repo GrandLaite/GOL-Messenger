@@ -8,11 +8,11 @@ import (
 func main() {
 	db, err := ConnectDB()
 	if err != nil {
-		fmt.Printf("Error connecting to database: %v\n", err)
+		fmt.Printf("Ошибка подключения к базе данных: %v\n", err)
 		return
 	}
 	defer db.Close()
-	fmt.Println("Connected to the database successfully")
+	fmt.Println("Подключение к базе данных прошло успешно")
 
 	http.HandleFunc("/register", RegisterUserHandler)                  // Регистрация нового пользователя
 	http.HandleFunc("/user", AuthMiddleware(GetUserHandler))           // Получение информации о пользователе
@@ -27,8 +27,8 @@ func main() {
 
 	http.HandleFunc("/login", LoginHandler) // Аутентификация и генерация JWT
 
-	fmt.Println("Server is running on http://localhost:8080")
+	fmt.Println("Сервер запущен и работает по адресу http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
-		fmt.Printf("Error starting server: %v\n", err)
+		fmt.Printf("Ошибка запуска сервера: %v\n", err)
 	}
 }
