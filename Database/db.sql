@@ -1,17 +1,14 @@
-CREATE TABLE Roles (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL
-);
-
+-- Таблица пользователей
 CREATE TABLE Users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(100) NOT NULL,
-    role_id INTEGER REFERENCES Roles(id) ON DELETE SET NULL,
+    is_premium BOOLEAN NOT NULL DEFAULT FALSE,  -- флаг для определения премиум-статуса
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Таблица сообщений
 CREATE TABLE Messages (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES Users(id) ON DELETE CASCADE,
@@ -19,19 +16,20 @@ CREATE TABLE Messages (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Таблица лайков
 CREATE TABLE Likes (
     id SERIAL PRIMARY KEY,
     message_id INTEGER REFERENCES Messages(id) ON DELETE CASCADE,
     user_id INTEGER REFERENCES Users(id) ON DELETE CASCADE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (message_id, user_id)  -- Гарантирует, что пользователь может поставить только один лайк на сообщение
 );
 
+-- Таблица суперлайков
 CREATE TABLE SuperLikes (
     id SERIAL PRIMARY KEY,
     message_id INTEGER REFERENCES Messages(id) ON DELETE CASCADE,
     user_id INTEGER REFERENCES Users(id) ON DELETE CASCADE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (message_id, user_id)  -- Гарантирует, что пользователь может поставить только один суперлайк на сообщение
 );
-
-
-INSERT INTO Roles (name) VALUES ('user'), ('superuser');
