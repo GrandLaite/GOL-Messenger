@@ -36,13 +36,13 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	var creds Credentials
 	err := json.NewDecoder(r.Body).Decode(&creds)
 	if err != nil {
-		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		http.Error(w, "Некорректный формат запроса", http.StatusBadRequest)
 		return
 	}
 
 	db, err := ConnectDB()
 	if err != nil {
-		http.Error(w, "Database connection error", http.StatusInternalServerError)
+		http.Error(w, "Ошибка подключения к базе данных", http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
@@ -54,16 +54,16 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	err = db.QueryRow(query, creds.Username).Scan(&userID, &storedPassword, &roleID)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			http.Error(w, "User not found", http.StatusUnauthorized)
+			http.Error(w, "Пользователь не найден", http.StatusUnauthorized)
 		} else {
-			http.Error(w, "Failed to retrieve user", http.StatusInternalServerError)
+			http.Error(w, "Не удалось получить данные пользователя", http.StatusInternalServerError)
 		}
 		return
 	}
 
 	// Сравнение паролей
 	if creds.Password != storedPassword {
-		http.Error(w, "Incorrect password", http.StatusUnauthorized)
+		http.Error(w, "Неверный пароль", http.StatusUnauthorized)
 		return
 	}
 
@@ -80,7 +80,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
-		http.Error(w, "Failed to create token", http.StatusInternalServerError)
+		http.Error(w, "Не удалось создать токен", http.StatusInternalServerError)
 		return
 	}
 
@@ -94,7 +94,7 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		tokenString := r.Header.Get("Authorization")
 		if tokenString == "" {
-			http.Error(w, "Authorization header is required", http.StatusUnauthorized)
+			http.Error(w, "Требуется авторизация", http.StatusUnauthorized)
 			return
 		}
 
@@ -103,7 +103,7 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			return jwtKey, nil
 		})
 		if err != nil || !token.Valid {
-			http.Error(w, "Invalid token", http.StatusUnauthorized)
+			http.Error(w, "Недействительный токен", http.StatusUnauthorized)
 			return
 		}
 
