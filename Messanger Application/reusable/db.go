@@ -11,14 +11,14 @@ func ConnectDB() (*sql.DB, error) {
 	dsn := "postgres://postgres:1@localhost:5432/gol_messenger" 
 	db, err := sql.Open("pgx", dsn)
 	if err != nil {
-		return nil, fmt.Errorf("failed to open database connection: %w", err)
+		return nil, fmt.Errorf("Не удалось авторизовать соединение с базой данных: %w", err)
 	}
 
 	err = db.Ping()
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect to database: %w", err)
+		return nil, fmt.Errorf("Не удалось подключиться к базе данных: %w", err)
 	}
 
-	fmt.Println("Successfully connected to the database")
+	fmt.Println("Подключение к базе данных прошло успешно")
 	return db, nil
 }
