@@ -20,13 +20,13 @@ func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
 	var user User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		http.Error(w, "Некорректный формат запроса", http.StatusBadRequest)
 		return
 	}
 
 	db, err := ConnectDB()
 	if err != nil {
-		http.Error(w, "Database connection error", http.StatusInternalServerError)
+		http.Error(w, "Ошибка подключения к базе данных", http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
@@ -35,25 +35,25 @@ func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
 	query := `INSERT INTO Users (username, email, password, role_id) VALUES ($1, $2, $3, $4) RETURNING id`
 	err = db.QueryRow(query, user.Username, user.Email, user.Password, user.RoleID).Scan(&user.ID)
 	if err != nil {
-		http.Error(w, "Failed to register user", http.StatusInternalServerError)
+		http.Error(w, "Ошибка регистрации пользователя", http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte(fmt.Sprintf("User registered successfully with ID: %d", user.ID)))
+	w.Write([]byte(fmt.Sprintf("Пользователь успешно зарегистрирован с ID: %d", user.ID)))
 }
 
 // Получение информации о пользователе по ID
 func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 	userID := r.URL.Query().Get("id")
 	if userID == "" {
-		http.Error(w, "User ID is required", http.StatusBadRequest)
+		http.Error(w, "Требуется ID пользователя", http.StatusBadRequest)
 		return
 	}
 
 	db, err := ConnectDB()
 	if err != nil {
-		http.Error(w, "Database connection error", http.StatusInternalServerError)
+		http.Error(w, "Ошибка подключения к базе данных", http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
@@ -63,9 +63,9 @@ func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 	err = db.QueryRow(query, userID).Scan(&user.ID, &user.Username, &user.Email, &user.RoleID)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			http.Error(w, "User not found", http.StatusNotFound)
+			http.Error(w, "Пользователь не найден", http.StatusNotFound)
 		} else {
-			http.Error(w, "Failed to retrieve user", http.StatusInternalServerError)
+			http.Error(w, "Не удалось получить данные пользователя", http.StatusInternalServerError)
 		}
 		return
 	}
@@ -78,20 +78,20 @@ func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 	userID := r.URL.Query().Get("id")
 	if userID == "" {
-		http.Error(w, "User ID is required", http.StatusBadRequest)
+		http.Error(w, "Требуется ID пользователя", http.StatusBadRequest)
 		return
 	}
 
 	var updatedUser User
 	err := json.NewDecoder(r.Body).Decode(&updatedUser)
 	if err != nil {
-		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		http.Error(w, "Некорректный формат запроса", http.StatusBadRequest)
 		return
 	}
 
 	db, err := ConnectDB()
 	if err != nil {
-		http.Error(w, "Database connection error", http.StatusInternalServerError)
+		http.Error(w, "Ошибка подключения к базе данных", http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
@@ -99,25 +99,25 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 	query := `UPDATE Users SET username = $1, email = $2 WHERE id = $3`
 	_, err = db.Exec(query, updatedUser.Username, updatedUser.Email, userID)
 	if err != nil {
-		http.Error(w, "Failed to update user", http.StatusInternalServerError)
+		http.Error(w, "Не удалось обновить данные пользователя", http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("User updated successfully"))
+	w.Write([]byte("Данные пользователя успешно обновлены"))
 }
 
 // Удаление пользователя
 func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 	userID := r.URL.Query().Get("id")
 	if userID == "" {
-		http.Error(w, "User ID is required", http.StatusBadRequest)
+		http.Error(w, "Требуется ID пользователя", http.StatusBadRequest)
 		return
 	}
 
 	db, err := ConnectDB()
 	if err != nil {
-		http.Error(w, "Database connection error", http.StatusInternalServerError)
+		http.Error(w, "Ошибка подключения к базе данных", http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
@@ -125,10 +125,10 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 	query := `DELETE FROM Users WHERE id = $1`
 	_, err = db.Exec(query, userID)
 	if err != nil {
-		http.Error(w, "Failed to delete user", http.StatusInternalServerError)
+		http.Error(w, "Не удалось удалить пользователя", http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("User deleted successfully"))
+	w.Write([]byte("Пользователь успешно удален"))
 }
