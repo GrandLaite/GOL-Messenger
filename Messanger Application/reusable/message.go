@@ -14,18 +14,17 @@ type Message struct {
 	CreatedAt string `json:"created_at"`
 }
 
-// Создание нового сообщения
 func CreateMessageHandler(w http.ResponseWriter, r *http.Request) {
 	var msg Message
 	err := json.NewDecoder(r.Body).Decode(&msg)
 	if err != nil {
-		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		http.Error(w, "Некорректный формат запроса", http.StatusBadRequest)
 		return
 	}
 
 	db, err := ConnectDB()
 	if err != nil {
-		http.Error(w, "Database connection error", http.StatusInternalServerError)
+		http.Error(w, "Ошибка подключения к базе данных", http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
@@ -34,25 +33,24 @@ func CreateMessageHandler(w http.ResponseWriter, r *http.Request) {
 	query := `INSERT INTO Messages (user_id, content) VALUES ($1, $2) RETURNING id, created_at`
 	err = db.QueryRow(query, msg.UserID, msg.Content).Scan(&msg.ID, &msg.CreatedAt)
 	if err != nil {
-		http.Error(w, "Failed to create message", http.StatusInternalServerError)
+		http.Error(w, "Не удалось создать сообщение", http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte(fmt.Sprintf("Message created successfully with ID: %d", msg.ID)))
+	w.Write([]byte(fmt.Sprintf("Сообщение успешно создано с ID: %d", msg.ID)))
 }
 
-// Получение сообщения по ID
 func GetMessageHandler(w http.ResponseWriter, r *http.Request) {
 	messageID := r.URL.Query().Get("id")
 	if messageID == "" {
-		http.Error(w, "Message ID is required", http.StatusBadRequest)
+		http.Error(w, "Необходимо указать ID сообщения", http.StatusBadRequest)
 		return
 	}
 
 	db, err := ConnectDB()
 	if err != nil {
-		http.Error(w, "Database connection error", http.StatusInternalServerError)
+		http.Error(w, "Ошибка подключения к базе данных", http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
@@ -62,9 +60,9 @@ func GetMessageHandler(w http.ResponseWriter, r *http.Request) {
 	err = db.QueryRow(query, messageID).Scan(&msg.ID, &msg.UserID, &msg.Content, &msg.CreatedAt)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			http.Error(w, "Message not found", http.StatusNotFound)
+			http.Error(w, "Сообщение не найдено", http.StatusNotFound)
 		} else {
-			http.Error(w, "Failed to retrieve message", http.StatusInternalServerError)
+			http.Error(w, "Не улаорст получить сообщение", http.StatusInternalServerError)
 		}
 		return
 	}
@@ -73,11 +71,10 @@ func GetMessageHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(msg)
 }
 
-// Обновление сообщения
 func UpdateMessageHandler(w http.ResponseWriter, r *http.Request) {
 	messageID := r.URL.Query().Get("id")
 	if messageID == "" {
-		http.Error(w, "Message ID is required", http.StatusBadRequest)
+		http.Error(w, "Необходимо указать ID сообщения", http.StatusBadRequest)
 		return
 	}
 
@@ -106,7 +103,6 @@ func UpdateMessageHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Message updated successfully"))
 }
 
-// Удаление сообщения
 func DeleteMessageHandler(w http.ResponseWriter, r *http.Request) {
 	messageID := r.URL.Query().Get("id")
 	if messageID == "" {
@@ -132,7 +128,6 @@ func DeleteMessageHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Message deleted successfully"))
 }
 
-// Получение списка всех сообщений (опционально)
 func ListMessagesHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := ConnectDB()
 	if err != nil {
