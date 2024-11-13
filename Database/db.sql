@@ -3,8 +3,8 @@ CREATE TABLE Users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(100) NOT NULL,
-    is_premium BOOLEAN NOT NULL DEFAULT FALSE,  -- флаг для определения премиум-статуса
+    password_hash VARCHAR(255) NOT NULL,  
+    is_premium BOOLEAN NOT NULL DEFAULT FALSE,  
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
