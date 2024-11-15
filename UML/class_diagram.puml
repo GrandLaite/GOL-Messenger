@@ -1,0 +1,86 @@
+@startuml class_diagram
+
+class User {
+    - id: int
+    - username: string
+    - email: string
+    - passwordHash: string
+    - isPremium: bool
+}
+
+class Message {
+    - id: int
+    - content: string
+    - createdAt: DateTime
+}
+
+class ChatRoom {
+    - id: int
+    - name: string
+    - createdAt: DateTime
+}
+
+class Attachment {
+    - id: int
+    - fileType: string
+}
+
+class Notification {
+    - id: int
+    - content: string
+    - sentAt: DateTime
+}
+
+class AuthService {
+    + authenticate(username: string, password: string): bool
+    + generateToken(user: User): string
+    + hashPassword(password: string): string
+    + verifyPassword(password: string, hash: string): bool
+}
+
+class MessageService {
+    + createMessage(content: string, user: User)
+    + getMessages(chatRoom: ChatRoom)
+    + editMessage(message: Message, newContent: string)
+    + deleteMessage(message: Message)
+}
+
+class UserService {
+    + register(user: User)
+    + login(username: string, password: string): string
+    + updateProfile(user: User)
+    + getUserByID(userID: int): User
+}
+
+class StorageService {
+    + storeFile(filePath: string)
+    + retrieveFile(filePath: string)
+}
+
+class NotificationService {
+    + sendNotification(user: User, content: string)
+    + scheduleNotification(user: User, content: string, sendAt: DateTime)
+}
+
+class Database {
+    + connect()
+    + query(sql: string)
+    + close()
+}
+
+UserService --> User : "управляет"
+User --> Message : "создаёт"
+Message --> Attachment : "содержит"
+User --> ChatRoom : "участвует в"
+ChatRoom --> Message : "содержит"
+User --> Notification : "получает"
+AuthService --> User : "аутентифицирует"
+MessageService --> Message : "управляет"
+StorageService --> Attachment : "обрабатывает через filePath"
+NotificationService --> Notification : "создаёт"
+NotificationService --> User : "отправляет уведомления"
+Database ..> User : "хранит"
+Database ..> Message : "хранит"
+Database ..> Attachment : "хранит"
+
+@enduml
