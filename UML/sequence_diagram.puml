@@ -1,0 +1,74 @@
+@startuml Sequence_Diagram
+
+actor User
+
+participant "Frontend" as FE
+participant "Backend" as BE
+participant "Authentication Service" as Auth
+participant "SQL Database" as SQL
+participant "S3 File Storage" as S3
+participant "Notification Service" as Notify
+
+User -> FE: Вход в систему (отправка данных авторизации)
+activate FE
+FE -> Auth: POST /login
+activate Auth
+Auth -> SQL: Проверка учетных данных
+activate SQL
+SQL --> Auth: Возвращение данных пользователя
+deactivate SQL
+Auth --> FE: Возвращение JWT токена
+deactivate Auth
+deactivate FE
+
+== Отправка сообщения ==
+
+User -> FE: Отправить сообщение
+activate FE
+FE -> BE: POST /messages (с JWT токеном)
+activate BE
+BE -> Auth: Проверка JWT токена
+activate Auth
+Auth --> BE: Подтверждение аутентификации
+deactivate Auth
+
+BE -> SQL: Сохранение сообщения
+activate SQL
+SQL --> BE: Успешное сохранение
+deactivate SQL
+
+BE -> S3: Сохранение вложения (если есть)
+activate S3
+S3 --> BE: Подтверждение сохранения
+deactivate S3
+
+BE -> Notify: Уведомить получателя о новом сообщении
+activate Notify
+Notify --> BE: Завершение уведомления
+deactivate Notify
+
+BE --> FE: Успешное отправление сообщения
+deactivate BE
+deactivate FE
+
+== Получение списка сообщений ==
+
+User -> FE: Получить сообщения
+activate FE
+FE -> BE: GET /messages (с JWT токеном)
+activate BE
+BE -> Auth: Проверка JWT токена
+activate Auth
+Auth --> BE: Подтверждение аутентификации
+deactivate Auth
+
+BE -> SQL: Получение сообщений пользователя
+activate SQL
+SQL --> BE: Возвращение списка сообщений
+deactivate SQL
+
+BE --> FE: Список сообщений
+deactivate BE
+deactivate FE
+
+@enduml
