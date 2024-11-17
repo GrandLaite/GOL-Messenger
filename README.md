@@ -4,6 +4,6 @@
 3. [Project Issues](https://github.com/GrandLaite/GOL-Messenger/issues?page=3&q=is%3Aissue+is%3Aopen) +
 4. [UML](https://github.com/GrandLaite/GOL-Messenger/tree/main/UML) +
 5. [Simple Web Server](https://github.com/GrandLaite/GOL-Messenger/tree/main/Hello%20World%20Server) +
-6. [Messenger Database](https://github.com/GrandLaite/GOL-Messenger/tree/main/Hello%20World%20Server)
+6. [Messenger Database](https://github.com/GrandLaite/GOL-Messenger/tree/main/Hello%20World%20Server) +
 7. [Messenger Release](https://github.com/GrandLaite/GOL-Messenger/tree/main/Messanger%20Application) +
 8. [Messenger Release](https://github.com/GrandLaite/GOL-Messenger/tree/main/Messanger%20Application) +
