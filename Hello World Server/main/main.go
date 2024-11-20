@@ -5,6 +5,7 @@ import (
 	"gol_messenger/config"
 	"gol_messenger/database"
 	"log"
+	"net/http"
 )
 
 func main() {
@@ -13,11 +14,14 @@ func main() {
 		log.Fatalf("Ошибка загрузки конфигурации: %v", err)
 	}
 
-	db, err := database.NewDatabase(cfg)
+	db, err := database.NewDatabase(cfg.DBConnectionString)
 	if err != nil {
 		log.Fatalf("Ошибка подключения к базе данных: %v", err)
 	}
 	defer db.Close()
 
-	fmt.Println("База данных и сервер успешно запущены.")
+	fmt.Println("Сервер запущен и работает по адресу http://localhost:8080")
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		log.Fatalf("Ошибка запуска HTTP-сервера: %v", err)
+	}
 }
