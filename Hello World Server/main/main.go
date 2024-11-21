@@ -20,8 +20,9 @@ func main() {
 	}
 	defer db.Close()
 
-	fmt.Println("Сервер запущен и работает по адресу http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatalf("Ошибка запуска HTTP-сервера: %v", err)
 	}
+
+	fmt.Println("Сервер запущен и работает по адресу http://localhost:8080")
 }
